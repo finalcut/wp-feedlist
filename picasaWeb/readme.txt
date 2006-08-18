@@ -1,3 +1,8 @@
+author:		 William Rawlinson
+version:	 0.2
+date:		 18 Aug 2006
+plugin URL:	 http://rawlinson.us/blog/articles/picasaweb-wordpress-plugin/
+
 installation:
 
 put picasaWeb (or this directory) in your wordpress plugins folder and activate it with the wordpress controlpanel.
@@ -8,8 +13,17 @@ usage:
 whever you want the thumbnails to appear on yourwebsite add the following code:
 
 <?
-picasaWeb('url of picasaweb feed');
+	picasaWeb('url of picasaweb feed');
 ?>
+
+
+OR if you want to show a subset of your thumbnails do this:
+
+<?
+	picasaWeb(array("url"=>'url of picasaweb feed',"num"=>2,"random"=>false));
+?>
+
+that will show the two most recent thumbnails at your picasaweb album.  Changing random to true will show a random set of thumbnails of those available.
 
 
 how to get your picasa web feed
