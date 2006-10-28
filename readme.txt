@@ -4,7 +4,7 @@
 or atom feed on your blog.
   Author: Bill Rawlinson
   Author URI: http://blog.rawlinson.us
-  Version: 2.1
+  Version: 2.1.1
 
 
 
