@@ -6,7 +6,7 @@
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.1
+	Version: 2.1.1
 
 
 	DESCRIPTION:
@@ -51,7 +51,7 @@
 
 
 	// The magpie stuff built into WordPress generates errors when normalizing atom to rss feed fields so lets suppress those:
-	error_reporting(E_ERROR);
+	//error_reporting(E_ERROR);
 
 	if(!function_exists('getLinkListSettings'))
 	{
@@ -209,7 +209,11 @@ max_char_wordbreak		Prevent breaking up words? true/false (if true: we cut on th
 	require_once(dirname(__FILE__).'/../../wp-admin/admin-functions.php');
 
 	// get the magpie libary
+if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
+} else {
+	require_once(dirname(__FILE__).'/../../wp-includes/rss.php');
+}
 
 	$settings = getLinkListSettings();
 
@@ -909,7 +913,6 @@ max_char_wordbreak		Prevent breaking up words? true/false (if true: we cut on th
 		/*********************
 		 ADMIN MANAGER METHODS
 		 *********************/
-
 		function feedListPrint()
 		{
 			$b = get_option('rss_sidebar');
@@ -1009,4 +1012,5 @@ max_char_wordbreak		Prevent breaking up words? true/false (if true: we cut on th
 			die('Cheeky monkey.');
 		}
 	}
+
 ?>
