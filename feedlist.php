@@ -6,7 +6,7 @@
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.1.1
+	Version: 2.1.2
 
 
 	DESCRIPTION:
@@ -451,6 +451,7 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 							$thisDescription = $description_seperator.$thisDescription;
 						}
 					}
+					$thisDescription = str_replace("&","&amp;",$thisDescription);
 	
 					// Only build the hyperlink if a link is provided..and we are not told to suppress the link:
 					if (!$suppress_link && strlen(trim($item['link'])) && strlen(trim($thisTitle)))
@@ -467,6 +468,8 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 					{
 						$thisLink = '<span class="rssLinkListItemTitle">' . $thisTitle . '</span>';
 					}
+
+					$thisLink = str_replace("&","&amp;",$thisLink);
 
 					// Determine if any extra data should be shown:
 					$extraData = '';
@@ -502,20 +505,8 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 							}
 						}
 					}
-/*
-					if (is_array($before))
-					{
-						$rssList .= $before[$BeforeArrayCrawler];
-						if ($BeforeArrayCrawler == count($BeforeArrayCrawler))
-						{
-							$BeforeArrayCrawler = 0;
-						}
-						else
-						{
-							$BeforeArrayCrawler++;
-						}
-					}
-*/
+					$extraData = str_replace("&","&amp;",$extraData);
+
 					
 					if ($show_description){
 						$rssList .= $before.$thisLink.$thisDescription.$extraData;
@@ -533,7 +524,7 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 			}
 			else
 			{
-				$rssList .= '<a href="#" title="No Items Found there may be a problem with the feed at: '. $rss_feed_url.'">Empty List</a>';
+				$rssList .= $before . '<a href="#" title="No Items Found there may be a problem with the feed at: '. $rss_feed_url.'">Empty List</a>' . $after;
 			}
 
 			if($show_date)
