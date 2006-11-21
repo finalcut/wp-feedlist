@@ -4,7 +4,7 @@
 or atom feed on your blog.
   Author: Bill Rawlinson
   Author URI: http://blog.rawlinson.us
-  Version: 2.1.1
+  Version: 2.1.2
 
 
 
@@ -39,6 +39,10 @@ cache directory.
 	12 May 2006			Added new parameter "additional_fields" which really extends what you can show within the output of the feed.
 
 	16 Jun 2006			Added new parameters max_characters and max_char_wordbreak Plus the ability to add translations for some key words that might get inserted in the feed items.
+
+	21 Nov 2006			minor bug fix that caused generated content to not be xhtml compliant - thanks to the owner of "The Swamp" at http://www.guzzlingcakes.com/ for pointing out the problems.
+					Am also including the class-snoopy.php fix for wordpress so that sites that gzip compress their feeds can be consumed by feedlist (this is a bug in snoopy that has been fixed)
+					this will allow you to pull in feeds from sites that previously didn't work such as ma.gnolia and reddit.com
 
 
 
@@ -105,6 +109,9 @@ CONFIGURATION section.
 
 	3.) Enable the feedList plugin in the "Plugins" section of 
 your WordPress administration panel.
+
+	4.) OPTIONAL BUT HIGHLY RECOMMENDED - Replace the class-snoopy.php file in your wp-includes directory with the one provided in this distribution.  The standard class-snoopy.php is broken
+	when trying to load pages that are compressed by their server (gzip compression).  This file fixes that problem.
 
 
   UPGRADING:
