@@ -6,7 +6,7 @@
 	Description: Display thumbnails from one of your picasaweb feeds.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 1.1
+	Version: 1
 
 
 
@@ -15,10 +15,10 @@
 
 
 	// get the magpie libary
-if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
-	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
-} else {
+if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 	require_once(dirname(__FILE__).'/../../wp-includes/rss.php');
+} else {
+	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
 }
 
 	
