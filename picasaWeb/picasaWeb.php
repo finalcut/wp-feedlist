@@ -6,7 +6,7 @@
 	Description: Display thumbnails from one of your picasaweb feeds.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 1
+	Version: 1.1
 
 
 
@@ -29,12 +29,32 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 		$p['url']="";
 		$p['random']=false;
 		$p['num']=0;
+		$p['size']=160;
+		$p['username']="";
+		$p['albumid']="";
+
 
 
 		if (is_array($args)){
 			if(!isset($args['url'])){
-				print "No URL Provided";
-				return false;
+
+				if(!isset($args['username'])){
+					print "No URL Provided";
+					return false;
+				} else {
+					$p['username'] = $args['username'];
+					$category='album';
+					$p['url'] = "http://picasaweb.google.com/data/feed/api/user/" . $p['username'] ."/";
+				}
+
+				if(isset($args['albumid'])){
+					$p['albumid'] = $args['albumid'];
+					$category='photo';
+					$p['url'] .= "albumid/".$p['albumid'];
+				}
+
+				$p['url'] .= "?category=". $category ."&alt=rss";
+
 			}else{
 				$p['url'] = $args['url'];
 			}
@@ -53,6 +73,9 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 			if (isset($args['num']) && is_numeric($args['num']))
 			{
 				$p['num'] = $args['num'];
+			}
+			if(isset($args['size']) && is_numeric($args['size']) && ($args['size'] == 144 || $args['size'] == 160 || $args['size'] == 288  || $args['size'] == 576 || $args['size'] == 720 )){
+				$p['size'] = $args['size'];
 			}
 
 		} else {
@@ -78,9 +101,13 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
 
 
 			foreach ($images as $image) {
-
+				$imgUrl = $image['photo']['imgsrc'].'?imgmax='. $p['size'];
+				if($p['size'] == 160){
+					$imgUrl .= '&crop=1';
+				}
+																																//?imgmax=160&crop=1
 				
-				$list .= '<a href="'.$image['link'].'"><img src="'.$image['photo']['thumbnail'].'" alt="'.$image['title'].'" /></a>';
+				$list .= '<a href="'.$image['link'].'"><img src="' . $imgUrl .'" alt="'.$image['title'].'" /></a>';
 			}
 		}
 

@@ -25,11 +25,27 @@ OR if you want to show a subset of your thumbnails do this:
 
 that will show the two most recent thumbnails at your picasaweb album.  Changing random to true will show a random set of thumbnails of those available.
 
+finally you can specify different thumbnail sizes of either 144, 160, 288, 576, or 720 - no other sizes are supported by Picasaweb.
+<?
+	picasaWeb(array("url"=>'url of picasaweb feed',"num"=>2,"random"=>false,"size"=>144));
+?>
 
 how to get your picasa web feed
 
-go to picasaweb.google.com and find your album (or albums).  On the page with your album is a link that says "rss" click on it.  The page that loads is the feed.  Copy that pages
-url and paste it in the call to the picasaWeb function explained in the usage section above.
+You CAN NOT use the feed that is advertised on the picasaweb pages anymore - but you can use the following as a template:
+
+http://picasaweb.google.com/data/feed/api/user/USERNAME/albumid/ALBUMID?category=photo&alt=rss
+
+replace USERNAME with your picasaweb username - for instance mine is bill.rawlinson
+replace ALBUMID with your picasaweb album id value - something like 4995878000989831185
+
+If you prefer to not type the entire URL everytime you can also just pass in the username and albumid like so:
+
+<? 
+	picasaWeb(array("username"=>"bill.rawlinson","albumid"=>"4995878000989831185","random"=>false,"num"=>3, "size"=>144)); 
+?>
+
+
 
 
 how to make your thumbnails look differently:
