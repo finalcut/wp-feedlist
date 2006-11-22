@@ -209,10 +209,10 @@ max_char_wordbreak		Prevent breaking up words? true/false (if true: we cut on th
 	require_once(dirname(__FILE__).'/../../wp-admin/admin-functions.php');
 
 	// get the magpie libary
-if (file_exists(dirname(__FILE__).'/../../wp-includes/rss-functions.php')) {
-	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
-} else {
+if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 	require_once(dirname(__FILE__).'/../../wp-includes/rss.php');
+} else {
+	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
 }
 
 	$settings = getLinkListSettings();
