@@ -22,10 +22,12 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 }
 
 	
-	
-	function picasaWeb($args){
+if ( !in_array('PicasaWeb', get_declared_classes() ) ) :
 
-		$p=array();
+class WP_PicasaWeb
+{
+	
+		var $p=array();
 		$p['url']="";
 		$p['random']=false;
 		$p['num']=0;
@@ -33,6 +35,13 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 		$p['username']="";
 		$p['albumid']="";
 
+	
+	function WP_PicasaWeb(){
+	}
+
+
+
+	function display($args){
 
 
 		if (is_array($args)){
@@ -117,5 +126,14 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 
 	
 	
+}
+
+//add_action('plugins_loaded', create_function('$wmr', 'global $wp_picasaWeb; $wp_picasaWeb = new WP_PicasaWeb;'));
+
+global $wp_picasaWeb;
+$wp_picasaWeb = new WP_PicasaWeb;
+
+endif;
+
 
 ?>

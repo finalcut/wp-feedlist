@@ -884,23 +884,24 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 
 		// This has been added because sometimes the MAGPIE that comes with WordPress calls an error
 		// method that isn't defined. This resolves that problem. DO NOT ERASE THIS.
-		function error($errormsg, $lvl=E_USER_WARNING)
-		{
-			// Append PHP's error message if track_errors enabled:
-			if (isset($php_errormsg))
+		if(!function_exists('error'){
+			function error($errormsg, $lvl=E_USER_WARNING)
 			{
-				$errormsg .= " ($php_errormsg)";
-			}
-			if (MAGPIE_DEBUG)
-			{
-				trigger_error($errormsg, $lvl);
-			}
-			else
-			{
-				error_log($errormsg, 0);
+				// Append PHP's error message if track_errors enabled:
+				if (isset($php_errormsg))
+				{
+					$errormsg .= " ($php_errormsg)";
+				}
+				if (MAGPIE_DEBUG)
+				{
+					trigger_error($errormsg, $lvl);
+				}
+				else
+				{
+					error_log($errormsg, 0);
+				}
 			}
 		}
-
 		/*********************
 		 ADMIN MANAGER METHODS
 		 *********************/
