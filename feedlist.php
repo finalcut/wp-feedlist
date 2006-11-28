@@ -884,7 +884,7 @@ if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 
 		// This has been added because sometimes the MAGPIE that comes with WordPress calls an error
 		// method that isn't defined. This resolves that problem. DO NOT ERASE THIS.
-		if(!function_exists('error'){
+		if(!function_exists('error')){
 			function error($errormsg, $lvl=E_USER_WARNING)
 			{
 				// Append PHP's error message if track_errors enabled:
