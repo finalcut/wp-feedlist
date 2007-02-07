@@ -40,11 +40,23 @@ replace USERNAME with your picasaweb username - for instance mine is bill.rawlin
 replace ALBUMID with your picasaweb album id value - something like 4995878000989831185
 
 If you prefer to not type the entire URL everytime you can also just pass in the username and albumid like so:
+THIS IS THE PREFERRED MECHANISM
 
 <? 
 	picasaWeb(array("username"=>"bill.rawlinson","albumid"=>"4995878000989831185","random"=>false,"num"=>3, "size"=>144)); 
 ?>
 
+
+UPDATE - NEW FEATURE - SHOW A RANDOM ALBUM/Images from a Random Album
+
+07 FEB 2007 - I have added a new feature that lets you display an image(s) from a random album within your public collection of albums to use it do this:
+
+<? 
+	picasaWeb(array("username"=>"bill.rawlinson","showRandomAlbum"=>true,"num"=>3, "size"=>144)); 
+?>
+
+For this feature to work you CAN NOT send in an albumid OR a url.  Just your username and showRandomAlbum=true.  You can still specify if you want random images in that album ("random"=>true),
+how many images to show from that album ("num"=>3) and what size images you want to display ("size"=>144)
 
 
 

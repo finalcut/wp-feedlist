@@ -26,24 +26,18 @@ if ( !in_array('PicasaWeb', get_declared_classes() ) ) :
 
 class WP_PicasaWeb
 {
-	
-		var $p=array();
+
+		private static function setArguments($args){
+		$p=array();
 		$p['url']="";
 		$p['random']=false;
 		$p['num']=0;
 		$p['size']=160;
 		$p['username']="";
 		$p['albumid']="";
+		$p['showRandomAlbum']=false;
 
-	
-	function WP_PicasaWeb(){
-	}
-
-
-
-	function display($args){
-
-
+		
 		if (is_array($args)){
 			if(!isset($args['url'])){
 
@@ -77,7 +71,17 @@ class WP_PicasaWeb
 						$p['random'] = false;
 					}
 
-			}
+					$p['randomAlbumImage'] = false;
+
+			} 
+			
+			if(isset($args['showRandomAlbum']) && !isset($args['albumid']) && !isset($args['url'])){ // only do this url='', and albumid = ''
+					if ($args['showRandomAlbum'] == 'true' || $args['showRandomAlbum'] == 1){
+						$p['showRandomAlbum'] = true;
+					}else{
+						$p['showRandomAlbum'] = false;
+					}
+			} 
 			
 			if (isset($args['num']) && is_numeric($args['num']))
 			{
@@ -91,12 +95,28 @@ class WP_PicasaWeb
 			$p['url'] = $args;
 		}
 
+		return $p;
+	}
 
+
+	public static function display($args){
+		$p = WP_PicasaWeb::setArguments($args);
+
+		if($p['showRandomAlbum']){ // we need to try and load all albums, pick one at random, then try this over again...
+			
+			if($albums =  WP_PicasaWeb::loadFeed($p['url'])) {
+				shuffle($albums);
+
+				$p['url'] = $albums[0]['gphoto']['rsslink'];
+
+			}
+		}
+
+		
 
 		$list = "";
 		
-		if($images = fetch_rss($p['url'])){
-			$images = $images->items;
+		if($images = WP_PicasaWeb::loadFeed($p['url'])){
 			if ($p['random'])
 			{
 				// We want a random selection, so lets shuffle it
@@ -120,18 +140,28 @@ class WP_PicasaWeb
 			}
 		}
 
+
+
+
 		print $list;
 
 	}
 
-	
+
+
+
+	private static function loadFeed($url){
+		$items = array();
+		if($items = fetch_rss($url)){
+			$items =  $items->items;
+		} 
+
+		return $items;
+	}
+
 	
 }
 
-//add_action('plugins_loaded', create_function('$wmr', 'global $wp_picasaWeb; $wp_picasaWeb = new WP_PicasaWeb;'));
-
-global $wp_picasaWeb;
-$wp_picasaWeb = new WP_PicasaWeb;
 
 endif;
 
