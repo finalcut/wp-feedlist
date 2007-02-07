@@ -1,5 +1,5 @@
 author:		 William Rawlinson
-version:	 0.2
+version:	 .1
 date:		 18 Aug 2006
 plugin URL:	 http://rawlinson.us/blog/articles/picasaweb-wordpress-plugin/
 
