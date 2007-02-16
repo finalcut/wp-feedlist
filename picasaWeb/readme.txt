@@ -1,5 +1,5 @@
 author:		 William Rawlinson
-version:	 .1
+version:	 1.2
 date:		 18 Aug 2006
 plugin URL:	 http://rawlinson.us/blog/articles/picasaweb-wordpress-plugin/
 
@@ -58,7 +58,9 @@ UPDATE - NEW FEATURE - SHOW A RANDOM ALBUM/Images from a Random Album
 For this feature to work you CAN NOT send in an albumid OR a url.  Just your username and showRandomAlbum=true.  You can still specify if you want random images in that album ("random"=>true),
 how many images to show from that album ("num"=>3) and what size images you want to display ("size"=>144)
 
-
+UPDATE - NEW FEATURE - MAKE THUMBNAIL LINK TO ALBUM INSTEAD OF IMAGE
+16 FEB 2007 - A friendly user, Travis, submitted an update that incorporates a new argument "linkToAlbum" - if you pass in true then it will link the thumbnails to their
+source album - if the thumbnails are those that represent each album then it will link to your picasaweb home directory.  I also refactored some of the code to make it cleaner.
 
 how to make your thumbnails look differently:
 
