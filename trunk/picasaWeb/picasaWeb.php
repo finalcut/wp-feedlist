@@ -36,7 +36,7 @@ class WP_PicasaWeb
 		$p['username']="";
 		$p['albumid']="";
 		$p['showRandomAlbum']=false;
-
+		$p['linkToAlbum']=false;
 		
 		if (is_array($args)){
 			if(!isset($args['url'])){
@@ -65,22 +65,14 @@ class WP_PicasaWeb
 
 			if (isset($args['random'])){
 
-					if ($args['random'] == 'true' || $args['random'] == 1){
-						$p['random'] = true;
-					}else{
-						$p['random'] = false;
-					}
+					$p['random'] = $this->trueOrFalse($args['random']);
 
 					$p['randomAlbumImage'] = false;
 
 			} 
 			
 			if(isset($args['showRandomAlbum']) && !isset($args['albumid']) && !isset($args['url'])){ // only do this url='', and albumid = ''
-					if ($args['showRandomAlbum'] == 'true' || $args['showRandomAlbum'] == 1){
-						$p['showRandomAlbum'] = true;
-					}else{
-						$p['showRandomAlbum'] = false;
-					}
+				$p['showRandomAlbum'] = $this->trueOrFalse($args['showRandomAlbum']);
 			} 
 			
 			if (isset($args['num']) && is_numeric($args['num']))
@@ -90,7 +82,10 @@ class WP_PicasaWeb
 			if(isset($args['size']) && is_numeric($args['size']) && ($args['size'] == 144 || $args['size'] == 160 || $args['size'] == 288  || $args['size'] == 576 || $args['size'] == 720 )){
 				$p['size'] = $args['size'];
 			}
-
+			if (isset($args['linkToAlbum']))
+			{
+				$p['linkToAlbum'] = $this->trueOrFalse($args['linkToAlbum']);
+			}
 		} else {
 			$p['url'] = $args;
 		}
@@ -98,6 +93,15 @@ class WP_PicasaWeb
 		return $p;
 	}
 
+	private function trueOrFalse($val){
+		$isTrue = false;
+		if($val == 'true' || (is_numeric($val) && $val != 0)){
+			$isTrue = true;
+		}
+	
+		return $isTrue;
+
+	}
 
 	public function display($args){
 		$p = WP_PicasaWeb::setArguments($args);
@@ -131,12 +135,16 @@ class WP_PicasaWeb
 
 			foreach ($images as $image) {
 				$imgUrl = $image['photo']['imgsrc'].'?imgmax='. $p['size'];
+				$imgLink= $image['link'];
 				if($p['size'] == 160){
 					$imgUrl .= '&crop=1';
 				}
-																																//?imgmax=160&crop=1
 				
-				$list .= '<a href="'.$image['link'].'"><img src="' . $imgUrl .'" alt="'.$image['title'].'" /></a>';
+				if($p['linkToAlbum']){
+					$imgLink = substr($imgLink, 0, strrpos($imgLink, '/'));
+				}
+
+				$list .= '<a href="'.$imgLink.'"><img src="' . $imgUrl .'" alt="'.$image['title'].'" /></a>';
 			}
 		}
 
