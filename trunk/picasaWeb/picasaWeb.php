@@ -67,8 +67,6 @@ class WP_PicasaWeb
 
 					$p['random'] = $this->trueOrFalse($args['random']);
 
-					$p['randomAlbumImage'] = false;
-
 			} 
 			
 			if(isset($args['showRandomAlbum']) && !isset($args['albumid']) && !isset($args['url'])){ // only do this url='', and albumid = ''
