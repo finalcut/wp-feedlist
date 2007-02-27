@@ -27,7 +27,7 @@ if ( !in_array('PicasaWeb', get_declared_classes() ) ) :
 class WP_PicasaWeb
 {
 
-		private function setArguments($args){
+		function setArguments($args){
 		$p=array();
 		$p['url']="";
 		$p['random']=false;
@@ -93,7 +93,7 @@ class WP_PicasaWeb
 		return $p;
 	}
 
-	private function trueOrFalse($val){
+	function trueOrFalse($val){
 		$isTrue = false;
 		if($val == 'true' || (is_numeric($val) && $val != 0)){
 			$isTrue = true;
@@ -103,7 +103,7 @@ class WP_PicasaWeb
 
 	}
 
-	public function display($args){
+	function display($args){
 		$p = WP_PicasaWeb::setArguments($args);
 
 		if($p['showRandomAlbum']){ // we need to try and load all albums, pick one at random, then try this over again...
@@ -158,7 +158,7 @@ class WP_PicasaWeb
 
 
 
-	private function loadFeed($url){
+	function loadFeed($url){
 		$items = array();
 		if($items = fetch_rss($url)){
 			$items =  $items->items;
