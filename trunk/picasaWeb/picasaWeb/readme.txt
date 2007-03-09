@@ -1,11 +1,29 @@
 author:		 William Rawlinson
-version:	 1.2
+version:	 1.3
 date:		 18 Aug 2006
 plugin URL:	 http://rawlinson.us/blog/articles/picasaweb-wordpress-plugin/
 
 installation:
 
-put picasaWeb (or this directory) in your wordpress plugins folder and activate it with the wordpress controlpanel.
+1. put picasaWeb (or this directory) in your wordpress plugins folder and activate it with the wordpress controlpanel.
+
+2. REALLY REALLY IMPORTANT!!!
+==============================================================================================================================================================================================
+EITHER: 
+	1. rename your existing rss.php file to rss.php.bak and put the included rss.php file in your wp-includes directory (make sure you save the origional one as rss.php.bak!!)
+	OR
+	2. insert the following three lines of PHP near line 116:
+
+		if(count($attrs)){
+			$this->current_item[$element]['attrs'] = $attrs;
+		}
+
+	These should end up in the function named: feed_start_element and should come after the line that says 		$attrs = array_change_key_case($attrs, CASE_LOWER);
+
+
+	If after installing picasaWeb another rss plugin breaks (such as feedList) then remove picasaWeb and revert to the old rss.php.  I had to make a customization to rss.php because
+	the default installation of magpie was deleting part of the atom feed (attributes on empty elements).
+==============================================================================================================================================================================================
 
 
 usage:
