@@ -19,10 +19,10 @@
 // Located in the parent directory
 
 
-if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
-	require_once(dirname(__FILE__).'/../../wp-includes/rss.php');
+if (file_exists(dirname(__FILE__).'/../../../wp-includes/rss.php')) {
+	require_once(dirname(__FILE__).'/../../../wp-includes/rss.php');
 } else {
-	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
+	require_once(dirname(__FILE__).'/../../../wp-includes/rss-functions.php');
 }
 
 
