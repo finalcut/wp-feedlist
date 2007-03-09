@@ -6,7 +6,7 @@
 	Description: Display thumbnails from one of your picasaweb feeds.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 1.1
+	Version: 1.3
 
 
 
@@ -15,11 +15,16 @@
 
 
 	// get the magpie libary
+// Include SimplePie
+// Located in the parent directory
+
+
 if (file_exists(dirname(__FILE__).'/../../wp-includes/rss.php')) {
 	require_once(dirname(__FILE__).'/../../wp-includes/rss.php');
 } else {
 	require_once(dirname(__FILE__).'/../../wp-includes/rss-functions.php');
 }
+
 
 	
 if ( !in_array('PicasaWeb', get_declared_classes() ) ) :
@@ -28,6 +33,7 @@ class WP_PicasaWeb
 {
 
 		function setArguments($args){
+		$nationality = "en_US";
 		$p=array();
 		$p['url']="";
 		$p['random']=false;
@@ -56,7 +62,7 @@ class WP_PicasaWeb
 					$p['url'] .= "albumid/".$p['albumid'];
 				}
 
-				$p['url'] .= "?category=". $category ."&alt=rss";
+				$p['url'] .= "?kind=". $category ."&alt=rss&access=public&hl=" . $nationality;
 
 			}else{
 				$p['url'] = $args['url'];
@@ -131,8 +137,9 @@ class WP_PicasaWeb
 			}
 
 
+
 			foreach ($images as $image) {
-				$imgUrl = $image['photo']['imgsrc'].'?imgmax='. $p['size'];
+				$imgUrl = $image['media:content']['attrs']['url'].'?imgmax='. $p['size'];
 				$imgLink= $image['link'];
 				if($p['size'] == 160){
 					$imgUrl .= '&crop=1';
@@ -161,7 +168,6 @@ class WP_PicasaWeb
 		if($items = fetch_rss($url)){
 			$items =  $items->items;
 		} 
-
 		return $items;
 	}
 
