@@ -23,6 +23,8 @@ EITHER:
 
 	If after installing picasaWeb another rss plugin breaks (such as feedList) then remove picasaWeb and revert to the old rss.php.  I had to make a customization to rss.php because
 	the default installation of magpie was deleting part of the atom feed (attributes on empty elements).
+
+	AFTERWARDS make sure you activate the plugin - even if you are upgrading you will have to reactivate becausee it was moved into its' own directory
 ==============================================================================================================================================================================================
 
 
