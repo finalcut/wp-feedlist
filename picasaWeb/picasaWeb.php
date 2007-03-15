@@ -11,7 +11,7 @@
 
 
 if(!class_exists('Zend')){
-ini_set("include_path", dirname(__FILE__)."\\ZendLibrary\\");
+ini_set("include_path", dirname(__FILE__)."/ZendLibrary/");
 require_once 'Zend/Feed.php';
 }
 	
