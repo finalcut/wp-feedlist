@@ -476,7 +476,6 @@
 
 					$a[$d] =  html_entity_decode($a[$d]);
 
-
 				}
 				return $a;
 			}
@@ -499,9 +498,9 @@
 				$feed = false;
 				if(function_exists('fetch_rss')){
 					$feed =  fetch_rss($feedUrl);
-				} else {
-					return $feed;
-				}
+				} 
+				return $feed;
+				
 			}
 
 			function InitializeReader($ignore_cache){
