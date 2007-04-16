@@ -605,7 +605,7 @@
 			$args = explode(",",$args[1]);
 
 
-			if(count($args) == 1){
+			if(count($args) == 1 && !strpos($args[0],":=")){
 				$a = array();
 				$a["rss_feed_url"] = $args[0];
 				$args = $a;
