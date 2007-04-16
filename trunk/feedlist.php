@@ -33,88 +33,107 @@
 	
 	class FeedList {
 		
+			var $id;
+			var $items;
+			var $rs;
+			var $args;
+			var $feed;
+			var $output;
+
+			function FeedList($args){
+				$this->args = $args;
+
+				$this->id = md5(uniqid(rand(), true));
+			}
+
+			function GetID(){
+				$this->Debug($this->id);
+			}
+
 		/* core methods */
 			// called automagically if you use a inline filter (inside a post/page).
-			function FeedListFilter($args){
-				return FeedList::BuildFeedOutput($args);
+			function FeedListFilter(){
+
+				return $this->BuildFeedOutput();
 			}
 
 
 			// call this if you want to process one feed
-			function FeedListFeed($args){
-				echo FeedList::BuildFeedOutput($args);
+			function FeedListFeed(){
+				echo $this->BuildFeedOutput();
 			}
 
 
 
 			// call this if you want to process a feed file
-			function FeedListFile($args){
-				$args = FeedList::GetArgumentArray($args);
-				$output = '';
+			function FeedListFile(){
+
+				$this->args = $this->GetArgumentArray();
+				$this->output = '';
 				// Seed the random number generator:
 				srand((double)microtime()*1000000);
 
 				$feed = Array();
 
-				$feedInfo = FeedList::LoadFile($args['file']);
+				$feedInfo = $this->LoadFile($this->args['file']);
 				if(count($feedInfo)){ // we have some feeds
 					// Randomize the array:
 					shuffle($feedInfo);
 					// Make sure we are set to show something:
-					($args['feedsToShow'] < 1) ? 1 : $args['feedsToShow'];
-					($args['feedsToShow'] > sizeof($feedInfo)) ? sizeof($feedInfo) : $args['feedsToShow'];
+					($this->args['feedsToShow'] < 1) ? 1 : $this->args['feedsToShow'];
+					($this->args['feedsToShow'] > sizeof($feedInfo)) ? sizeof($feedInfo) : $this->args['feedsToShow'];
 
 					// we will fetch each feed, then coallate items
-					for($i=0;$i<$args['feedsToShow'];$i++){
+					for($i=0;$i<$this->args['feedsToShow'];$i++){
 						$thisFeed = $feedInfo[$i];
 
 						$urlAndTitle =  preg_split("/~/", $thisFeed);
 						$feedUrl = trim($urlAndTitle[0]);
 						$feedTitle = trim($urlAndTitle[1]);
 						
-						$rs = FeedList::GetFeed($feedUrl);
+						$this->rs = $this->GetFeed($feedUrl);
 
-						if($rs){
-							$items = $rs->items;
+						if($this->rs){
+							$this->items = $this->rs->items;
 
-							if($args['random']){
-								shuffle($items);
+							if($this->args['random']){
+								shuffle($this->items);
 							}
 							// Slice off the number of items that we want:
-							if ($args['num_items'] > 0)
+							if ($this->args['num_items'] > 0)
 							{
-								$items = array_slice($items, 0, $args['num_items']);
+								$this->items = array_slice($this->items, 0, $this->args['num_items']);
 							}
 
-							if(!$args['mergeFeeds']){
-								$output.= '<div class="feedTitle">'.$feedTitle.'</div>';
-								if($args['show_date']){
-									$output .= '<div class="feedDate">updated: '.fl_tz_convert($rs->last_modified,0,Date('I')).'</div>';
+							if(!$this->args['mergeFeeds']){
+								$this->output.= '<div class="feedTitle">'.$feedTitle.'</div>';
+								if($this->args['show_date']){
+									$this->output .= '<div class="feedDate">updated: '.fl_tz_convert($this->rs->last_modified,0,Date('I')).'</div>';
 								}
 
-								$output.=FeedList::Draw($items,$args);
+								$this->output.=$this->Draw($this->items,$this->args);
 							} else {
-								$feed = array_merge($feed,$items);
+								$feed = array_merge($feed,$this->items);
 							}
 
 						}
 
 					}
-				$output .= '<ul class="randomFeed">';
+				$this->output .= '<ul class="randomFeed">';
 
-				if($args['mergeFeeds']){
-					$output.=FeedList::Draw($feed,$args);
+				if($this->args['mergeFeeds']){
+					$this->output.=$this->Draw($feed,$this->args);
 				} 
 			
-				$output .= '</ul>';
+				$this->output .= '</ul>';
 
 
 				} else {
-					$output = $args['before'] . 'No Items Were Found In the Provided Feeds. Perhaps there is a communication problem.' . $args['after'];
+					$this->output = $this->args['before'] . 'No Items Were Found In the Provided Feeds. Perhaps there is a communication problem.' . $this->args['after'];
 				}
 
 				// coallate feed items
-				echo $output;
+				echo $this->output;
 
 			}
 		/* end core methods */
@@ -176,7 +195,7 @@
 			}
 
 			function GetDefaults(){
-				$settings = FeedList::GetSettings();
+				$settings = $this->GetSettings();
 				return array(	'rss_feed_url' => 'http://del.icio.us/rss',
 							'num_items' => 15,
 							'show_description' => true,
@@ -200,33 +219,43 @@
 			
 			}
 		/* end basic settings */
-			function BuildFeedOutput($args){
-				$args = FeedList::GetArgumentArray($args);
+			function BuildFeedOutput(){
+				$this->args = $this->GetArgumentArray();
 
-				$rs = FeedList::GetFeed($args['rss_feed_url']);
-				$output = '';
-				if($rs){
-					$items = $rs->items;
-					if($args['random']){
-						shuffle($items);
+
+				$this->rs = $this->GetFeed($this->args['rss_feed_url']);
+
+
+				$this->output = '';
+				if($this->rs){
+					$this->items = $this->rs->items;
+					if($this->args['random']){
+						shuffle($this->items);
 					}
 					// Slice off the number of items that we want:
-					if ($args['num_items'] > 0)
+					if ($this->args['num_items'] > 0)
 					{
-						$items = array_slice($items, 0, $args['num_items']);
+						$this->items = array_slice($this->items, 0, $this->args['num_items']);
 					}
-					$output = FeedList::Draw($items,$args);
+
+
+					$this->output = $this->Draw();
 				}
 
-				return $output;
+
+				return $this->output;
 			}
 
 
-			function Draw($items,$args){
-				$settings = FeedList::GetSettings();
-				$items = FeedList::NormalizeDate($items);
+			function Draw(){
 
-				$items = FeedList::SortItems($items,$args['sort']);
+				$settings = $this->GetSettings();
+				$this->items = $this->NormalizeDate($this->items);
+
+
+
+
+				$this->items = $this->SortItems($this->items,$this->args['sort']);
 
 				// Explicitly set this because $new_window could be "simple":
 				$target = '';
@@ -239,15 +268,15 @@
 					$target=' target="_blank" ';
 				}
 
-				$output ='';
+				$this->output ='';
 
-				foreach($items as $item){
+				foreach($this->items as $item){
 					$thisLink = '';
 					$linkTitle = '';
 					$thisDescription = '';
 					$thisTitle = $item['title'];
 
-					if ($args['encoding']){ // very poor and limited internationalization effort
+					if ($this->args['encoding']){ // very poor and limited internationalization effort
 						$thisTitle = htmlentities(utf8_decode($thisTitle));
 					}
 
@@ -260,12 +289,12 @@
 						}
 						
 						// Handle max_characters and max_char_wordbreak before the htmlentities makes it more complicated:
-						if (!empty($args['max_characters']) && is_numeric($args['max_characters']))
+						if (!empty($this->args['max_characters']) && is_numeric($this->args['max_characters']))
 						{
-							$thisDescription = substr($thisDescription, 0, $args['max_characters']);
+							$thisDescription = substr($thisDescription, 0, $this->args['max_characters']);
 
 							// If true, we cut on the last space:
-							if (!empty($args['max_char_wordbreak']))
+							if (!empty($this->args['max_char_wordbreak']))
 							{
 								$max_char_pos = strrpos($thisDescription, ' ');
 								if ($max_char_pos > 0)
@@ -286,15 +315,15 @@
 	
 						if (strlen(trim($thisDescription)))
 						{
-							$thisDescription = $args['description_seperator'].$thisDescription;
+							$thisDescription = $this->args['description_separator'].$thisDescription;
 						}
 					}
 
 					// Only build the hyperlink if a link is provided..and we are not told to suppress the link:
-					if (!$args['suppress_link'] && strlen(trim($item['link'])) && strlen(trim($thisTitle))){
+					if (!$this->args['suppress_link'] && strlen(trim($item['link'])) && strlen(trim($thisTitle))){
 						$thisLink = '<span class="rssLinkListItemTitle"><a href="'.htmlentities(utf8_decode($item['link'])).'"' . $target .' title="'.$linkTitle.'">'.$thisTitle.'</a></span>';
 					}
-					elseif (strlen(trim($item['link'])) && $args['show_description'])
+					elseif (strlen(trim($item['link'])) && $this->args['show_description'])
 					{
 						// If we don't have a title but we do have a description we want to show.. link the description
 						$thisLink = '<span class="rssLinkListItemTitle"><a href="'.htmlentities(utf8_decode($item['link'])).'"' . $target .'><span class="rssLinkListItemDesc">'.$thisDescription.'</span></a></span>';
@@ -307,12 +336,12 @@
 
 					// Determine if any extra data should be shown:
 					$extraData = '';
-					if (strlen($args['additional_fields'])){
+					if (strlen($this->args['additional_fields'])){
 						// Magpie converts all key names to lowercase so we do too:
-						$args['additional_fields'] = strtolower($args['additional_fields']);
+						$this->args['additional_fields'] = strtolower($this->args['additional_fields']);
 
 						// Get each additional field:
-						$addFields = explode('~', $args['additional_fields']);
+						$addFields = explode('~', $this->args['additional_fields']);
 
 						foreach ($addFields as $addField)
 						{
@@ -339,23 +368,23 @@
 						}
 					}
 
-					if ($args['show_description']){
-						$output .= $args['before'].$thisLink.$thisDescription.$extraData;
+					if ($this->args['show_description']){
+						$this->output .= $this->args['before'].$thisLink.$thisDescription.$extraData;
 					}else{
-						$output .= $args['before'].$thisLink.$extraData;
+						$this->output .= $this->args['before'].$thisLink.$extraData;
 					}
-					if (is_numeric($args['max_characters']) && $args['max_characters'] > 0) {
-						$output .= '<div class="ReadMoreLink"><a href="'.htmlentities(utf8_decode($item['link'])).'">'.$settings["translations"][$settings["language"]]['ReadMore'].'</a> &nbsp; </div>';
+					if (is_numeric($this->args['max_characters']) && $this->args['max_characters'] > 0) {
+						$this->output .= '<div class="ReadMoreLink"><a href="'.htmlentities(utf8_decode($item['link'])).'">'.$settings["translations"][$settings["language"]]['ReadMore'].'</a> &nbsp; </div>';
 					}
 
-					$output .= $args['after'];
+					$this->output .= $this->args['after'];
 
 
 
 				}
 
 
-				return $output;
+				return $this->output;
 			}
 
 			function ArrayPush(&$arr) {
@@ -374,36 +403,39 @@
 			}
 		/* utility functions */
 
-			function NormalizeDate($items){
+			function NormalizeDate(){
 				$newItems = array();
 
-				foreach($items as $item){
+				foreach($this->items as $item){
 					if(array_key_exists('pubdate',$item)) {
 						$d = $item['pubdate'];
 						$d = explode(' ',$d);
 
-						$d = $d[3]   . FeedList::GetMonthNum($d[2]) .   $d[1] . $d[4] . '0000';
-						$d = FeedList::MakeNumericOnly($d);
-						FeedList::ArrayPush($item,array("feeddate"=>$d));
+						$d = $d[3]   . $this->GetMonthNum($d[2]) .   $d[1] . $d[4] . '0000';
+						$d = $this->MakeNumericOnly($d);
+						$this->ArrayPush($item,array("feeddate"=>$d));
+						
+
 
 					} else if (array_key_exists('published',$item)) {
 						$d = $item['published'];
-						$d = FeedList::MakeNumericOnly($d);
-						FeedList::ArrayPush($item,array("feeddate"=>$d));
+						$d = $this->MakeNumericOnly($d);
+						$this->ArrayPush($item,array("feeddate"=>$d));
+
 					} else if (array_key_exists('dc',$item) && array_key_exists('date',$item['dc'])) {
 						$d = $item['dc'];
 						$d = $d['date'];
-						$d = FeedList::MakeNumericOnly($d);
-						FeedList::ArrayPush($item,array("feeddate"=>$d));
+						$d = $this->MakeNumericOnly($d);
+						$this->ArrayPush($item,array("feeddate"=>$d));
+
 					} else {
 						$d = date("YmdHmsO");
-						$d = FeedList::MakeNumericOnly($d);
-						FeedList::ArrayPush($item,array("feeddate"=>$d));
+						$d = $this->MakeNumericOnly($d);
+						$this->ArrayPush($item,array("feeddate"=>$d));
 
 					}
 					array_push($newItems,$item);
 				}
-
 				return $newItems;
 			}
 
@@ -418,8 +450,8 @@
 				return $months[$month];
 			}
 
-			function SortItems($items,$args){
-				$sort = strtolower($args);
+			function SortItems(){
+				$sort = strtolower($this->args);
 				$sort = explode(" ",$sort);
 
 
@@ -436,10 +468,10 @@
 				} else {
 					$sort[2] = SORT_STRING;
 				}
-				if (($sort[1]!='') && count($items))
+				if (($sort[1]!='') && count($this->items))
 				{
 					// Order  by sortCol:
-					foreach($items as $item)
+					foreach($this->items as $item)
 					{
 						$sortBy[] = $item[$sort[0]];
 					}
@@ -447,10 +479,10 @@
 					// Make titles lowercase (otherwise capitals will come before lowercase):
 					$sortByLower = array_map('strtolower', $sortBy);
 
-					array_multisort($sortByLower, $sort[1], $sort[2], $items);
+					array_multisort($sortByLower, $sort[1], $sort[2], $this->items);
 				}
 				
-				return $items;
+				return $this->items;
 			}
 
 			function LoadFile($file){
@@ -462,13 +494,13 @@
 				return preg_split("/--NEXT--/", join('', file($file)));
 			}
 
-			function GetArgumentArray($args){
-				$args = FeedList::AssignDefaults($args);
+			function GetArgumentArray(){
+				$this->args = $this->AssignDefaults();
 				$a = array();
-				foreach($args as $d=>$v){
-					if($args[$d] === 'true') { 
+				foreach($this->args as $d=>$v){
+					if($this->args[$d] === 'true') { 
 						$a[$d] = 1;
-					}else if($args[$d] === 'false'){
+					}else if($this->args[$d] === 'false'){
 						$a[$d] = 0;
 					}else{
 						$a[$d] = $v;
@@ -477,34 +509,36 @@
 					$a[$d] =  html_entity_decode($a[$d]);
 
 				}
+
 				return $a;
 			}
 
 
-			function AssignDefaults($args){
-				$defaults = FeedList::GetDefaults();
+			function AssignDefaults(){
+				$defaults = $this->GetDefaults();
 				$a = array();
 				$i=0;
+
 				foreach ($defaults as $d => $v)
 				{
-					$a[$d] = isset($args[$d]) ? $args[$d] : $v;
-					$a[$d] = isset($args[$i]) ? $args[$i] : $a[$d];
+					$a[$d] = isset($this->args[$d]) ? $this->args[$d] : $v;
+					$a[$d] = isset($this->args[$i]) ? $this->args[$i] : $a[$d];
 					$i++;
 				}
 				return $a;
 			}
 
 			function GetFeed($feedUrl){
-				$feed = false;
+				$this->feed = false;
 				if(function_exists('fetch_rss')){
-					$feed =  fetch_rss($feedUrl);
+					$this->feed =  fetch_rss($feedUrl);
 				} 
-				return $feed;
+				return $this->feed;
 				
 			}
 
 			function InitializeReader($ignore_cache){
-				$settings = FeedList::GetSettings();
+				$settings = $this->GetSettings();
 
 				if ($ignore_cache)
 				{
@@ -549,33 +583,48 @@
 			return feedList($args);
 		}
 		function feedList($args){
-			$feed = new FeedList();
-
 			if(!is_array($args)){
 				$args = func_get_args();
 			}
-			return $feed->FeedListFeed($args);
+
+			$feed = new FeedList($args);
+
+			return $feed->FeedListFeed();
 		}
 
 		function randomFeedList($args){
 			if(!is_array($args)){
-				$args = parse_str($args,$a);
-				$args = $a;
+				$this->args = parse_str($args,$a);
+				$this->args = $a;
 			}
-			$feed = new FeedList();
-			return $feed->FeedListFile($args);
+			$feed = new FeedList($args);
+			return $feed->FeedListFile();
 		}
 		
 		function feedListFilter($args){
 			$args = explode(",",$args[1]);
-			$a = array();
-			foreach($args as $arg){
-				$arg = explode(":=",$arg);
-				$a[$arg[0]] = $arg[1];
+
+
+			if(count($args) == 1){
+				$a = array();
+				$a["rss_feed_url"] = $args[0];
+				$args = $a;
+			} else {
+				$a = array();
+				foreach($args as $arg){
+					$arg = explode(":=",$arg);
+					$a[$arg[0]] = $arg[1];
+				}
+				$args = $a;
+
 			}
-			$args = $a;
-			$feed = new FeedList();
-			return $feed->FeedListFilter($args);
+
+
+			
+			$feed = new FeedList($args);
+
+			return $feed->FeedListFilter();
+
 		}
 
 	/* end template functions */
