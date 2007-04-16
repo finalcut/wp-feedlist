@@ -1,11 +1,11 @@
 <?
 /*
 	Plugin Name: Feed List
-	Plugin URI: http://rawlinson.us/blog/?p=212
+	Plugin URI: http://rawlinson.us/blog/articles/feedlist-plugin/
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.2b
+	Version: 2.2
 */
 
 	// include files
