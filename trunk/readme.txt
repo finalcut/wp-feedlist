@@ -4,7 +4,7 @@
 or atom feed on your blog.
   Author: Bill Rawlinson
   Author URI: http://blog.rawlinson.us
-  Version: 2.1.2
+  Version: 2.2
 
 
 
@@ -43,6 +43,8 @@ cache directory.
 	21 Nov 2006			minor bug fix that caused generated content to not be xhtml compliant - thanks to the owner of "The Swamp" at http://www.guzzlingcakes.com/ for pointing out the problems.
 					Am also including the class-snoopy.php fix for wordpress so that sites that gzip compress their feeds can be consumed by feedlist (this is a bug in snoopy that has been fixed)
 					this will allow you to pull in feeds from sites that previously didn't work such as ma.gnolia and reddit.com
+
+	14 Apr 2007			Complete rewrite
 
 
 
