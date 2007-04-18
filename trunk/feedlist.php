@@ -222,7 +222,6 @@
 			function BuildFeedOutput(){
 				$this->args = $this->GetArgumentArray();
 
-
 				$this->rs = $this->GetFeed($this->args['rss_feed_url']);
 
 
@@ -451,11 +450,10 @@
 			}
 
 			function SortItems(){
-				$sort = strtolower($this->args);
+				$sort = strtolower($this->args['sort']);
 				$sort = explode(" ",$sort);
 
-
-				if(count($sort) ==1 || $sort[1] == 'asc'){
+				if((count($sort) ==1 || $sort[0] == 'asc') && $sort[0] != 'none'){
 					$sort[1] = SORT_ASC;
 				} elseif ($sort[1] == 'desc') {
 					$sort[1] = SORT_DESC;
