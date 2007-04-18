@@ -578,6 +578,9 @@
 
 	/* Templates can call any of these functions */
 		function rssLinkList($args){
+			if(!is_array($args)){
+				$args = func_get_args();
+			}
 			return feedList($args);
 		}
 		function feedList($args){
