@@ -177,6 +177,9 @@
 					$Translations['nl_NL'] = array();
 					$Translations['nl_NL']['ReadMore']		= '[lees verder]';
 
+					// French:
+					$Translations['fr_FR'] = array();
+					$Translations['fr_FR']['ReadMore'] = 'Lisez davantage';
 				
 				$feedListFile = '/feeds.txt'; // IF you are going to use the random feedlist generator make sure this holds the correct name for your feed file:
 
