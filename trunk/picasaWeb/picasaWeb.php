@@ -2,17 +2,19 @@
 
 /*
 	Plugin Name: PicasaWeb
-	Plugin URI: 
+	Plugin URI: http://rawlinson.us/blog/articles/picasaweb-wordpress-plugin/
 	Description: Display thumbnails from one of your picasaweb feeds.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 1.4
+	Version: 1.7
 */
 
 
-if(!class_exists('Zend')){
-ini_set("include_path", dirname(__FILE__)."/ZendLibrary/");
-require_once 'Zend/Feed.php';
+
+
+if(!class_exists('lastRSS')){
+	require_once(dirname(__FILE__).'/lastRSS.php');
+//	require_once 'lastRSS.php';
 }
 	
 if ( !in_array('PicasaWeb', get_declared_classes() ) ) :
@@ -41,17 +43,17 @@ class WP_PicasaWeb
 					} else {
 						$p['username'] = $args['username'];
 						$category='album';
-						$p['url'] = "http://picasaweb.google.com/data/feed/api/user/" . $p['username'] ."/";
+						$p['url'] = "http://picasaweb.google.com/data/feed/base/user/" . $p['username'] ."";
 					}
 
 					if(isset($args['albumid'])){
 						$p['url'] = 'http://picasaweb.google.com/data/feed/base/user/' . $p['username'] . '/albumid/';
 						$p['albumid'] = $args['albumid'];
 						$category='photo';
-						$p['url'] .= "albumid/".$p['albumid'];
+						$p['url'] .= $p['albumid'];
 					}
 
-					$p['url'] .= "?kind=". $category ."&access=public&hl=" . $nationality;
+					$p['url'] .= "?kind=". $category ."&access=public&alt=rss&hl=" . $nationality;
 
 				}else{
 					$p['url'] = $args['url'];
@@ -129,14 +131,16 @@ class WP_PicasaWeb
 
 			foreach ($images as $image) {
 				$imgUrl = $image['album_thumbnail_url'].'?imgmax='. $p['size'];
-				$imgLink= $image['image_url'];
+				$imgLink= $image['image_link'];
+				
+				if($p['linkToAlbum']){
+					$imgLink = $img['album_link'];
+				}
+				
 				if($p['size'] == 160){
 					$imgUrl .= '&crop=1';
 				}
 				
-				if($p['linkToAlbum']){
-					$imgLink= $image['album_url'];
-				}
 
 				$list .= '<a href="'.$imgLink.'"><img src="' . $imgUrl .'" alt="'.$image['title'].'" /></a>';
 			}
@@ -151,35 +155,56 @@ class WP_PicasaWeb
 
 
 	function loadFeed($url){
-		try {
-			Zend_Feed::registerNamespace('media','http://search.yahoo.com/mrss/');
-			Zend_Feed::registerNamespace('gphoto','http://schemas.google.com/photos/2007');
-			$feed = Zend_Feed::import($url);
-		} catch (Zend_Feed_Exception $e) {
+			$rss = new lastRSS;
+			$feed = $rss->get($url);
+
+			if(!$feed) {
 			// feed import failed
-			print "Exception caught importing feed: {$e->getMessage()}\n";
+			print "Exception caught importing feed - Feed file not found";
 			exit;
-		}
+			}
+
 		
 		$items = array();
-		foreach($feed as $item){
 
-			/*figure out the image id if we can */
-			$baseID = $item->link('alternate');
-			$baseID = explode('/',$baseID);
-			$baseID = $baseID[count($baseID)-1];
-				
+
+		foreach($feed['items'] as $item){
+
+		//picasaweb uses a pretty complex atom feed format - so we hare kind of hacking to get the properties from
+		// the rss format found by lastRSS - this makes the whole plugin a bit more usable to more people.
+
+		// this regular expression matching is courtesy of Kiroro at http://kiroro.prophp.org/blog/
+			if(preg_match('<img [^/]* src="([^"]*)" [^/]*/>', $item['description'],$imgUrlMatches)) {
+				$imgurl = $imgUrlMatches[1];
+			}
+
+
+			$fileurl = explode('/',$imgurl);
+			$fileurl = $fileurl[count($fileurl)-1];
+			$imgurl = explode('s288',$imgurl);
+
+			$imgurl=$imgurl[0];	
+
+			$albumLink = $item['link'];
+
+			$i = strstr($albumLink, "photo#");
+			if(strlen($i) > 0){
+				$albumLink = substr($albumLink, 0,  strlen($albumLink) - strlen($i)-1);
+			}
+
+			$str=explode('<',$item['title']);
 			$items[] = array(
-					'title' => $item->title(),
-					'image_url'=> $item->link('alternate') . '/' . $baseID,
-					'album_url' => $item->link('alternate'),
-					'description' => $item->summary(),
-					'album_feed_url' => $item->link('http://schemas.google.com/g/2005#feed'),
-					'album_thumbnail_url'=>$item->group->content['url']
-					
-				);
-
+						'title' =>  urldecode($fileurl),
+						'image_url'=> $imgurl,
+						'image_link' => $item['link'],
+						'album_link'=>$albumLink,
+						'description' => strip_tags($str[0]),
+						'album_feed_url' =>$item['guid'] ,
+						'album_thumbnail_url'=>$imgurl
+						
+					);
 		}
+//		WP_PicasaWeb::debug($items);
 		return $items;
 	} 
 
