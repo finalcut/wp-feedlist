@@ -261,11 +261,11 @@
 
 				// Explicitly set this because $new_window could be "simple":
 				$target = '';
-				if($new_window == true && $settings["showRSSLinkListJS"])
+				if($settings["new_window"] == true && $settings["showRSSLinkListJS"])
 				{
 					$target=' rel="external" ';
 				}
-				elseif ($new_window == true || $new_window == 'simple')
+				elseif ($settings["new_window"] == true || $settings["new_window"] == 'simple')
 				{
 					$target=' target="_blank" ';
 				}
