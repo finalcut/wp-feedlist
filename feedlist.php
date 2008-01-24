@@ -264,11 +264,11 @@
 
 				// Explicitly set this because $new_window could be "simple":
 				$target = '';
-				if($settings["new_window"] == true && $settings["showRSSLinkListJS"])
+				if($this->args["new_window"] == true && $settings["showRSSLinkListJS"])
 				{
 					$target=' rel="external" ';
 				}
-				elseif ($settings["new_window"] == true || $settings["new_window"] == 'simple')
+				elseif ($this->args["new_window"] == true || $settings["new_window"] == 'simple')
 				{
 					$target=' target="_blank" ';
 				}
@@ -643,4 +643,58 @@
 			add_action('admin_head','FeedListInitError');
 		}
 
+
+if(function_exists('add_action')) { 
+	      function rssLinkList_JS(){ 
+	 
+	            $jsstring = '<script type="text/javascript"><!-- 
+	 
+	            function addEvent(elm, evType, fn, useCapture) 
+	            // addEvent and removeEvent 
+	            // cross-browser event handling for IE5+,  NS6 and Mozilla 
+	            // By Scott Andrew 
+	            { 
+	              if (elm.addEventListener){ 
+	                  elm.addEventListener(evType, fn, useCapture); 
+	                  return true; 
+	              } else if (elm.attachEvent){ 
+	                  var r = elm.attachEvent("on"+evType, fn); 
+	                  return r; 
+	              } else { 
+	                  alert("Handler could not be removed"); 
+	              } 
+	            }  
+	            function externalLinks() { 
+	             if (!document.getElementsByTagName) return; 
+	             var anchors = document.getElementsByTagName("a"); 
+				 var newwindows =0;
+	             for (var i=0; i<anchors.length; i++) { 
+	               var anchor = anchors[i]; 
+	               if (anchor.getAttribute("href") && anchor.getAttribute("rel") == "external") {
+	                        anchor.setAttribute("target","_blank"); 
+							newwindows++;
+					}
+	             } 
+	            } 
+	 
+	            addEvent(window, "load", externalLinks); 
+
+	            //--> 
+	            </script> 
+	            '; 
+	 
+	 
+	            echo $jsstring; 
+	      }
+
+
+	$jsFeed = new FeedList('');
+	$settings = $jsFeed->GetSettings();
+	 
+	if($settings["showRSSLinkListJS"]){ 
+		  add_action('wp_head', 'rssLinkList_JS'); 
+	} 
+}
+	 
+	 
 ?>
