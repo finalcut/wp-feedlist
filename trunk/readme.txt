@@ -4,7 +4,7 @@
 or atom feed on your blog.
   Author: Bill Rawlinson
   Author URI: http://blog.rawlinson.us
-  Version: 2.2
+  Version: 2.21
 
 
 
@@ -45,6 +45,8 @@ cache directory.
 					this will allow you to pull in feeds from sites that previously didn't work such as ma.gnolia and reddit.com
 
 	14 Apr 2007			Complete rewrite
+
+	22 Jan 2008			Minor Bug fixes (handle show_date, show_date_per_item)
 
 
 

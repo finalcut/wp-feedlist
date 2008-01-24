@@ -5,7 +5,7 @@
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.2
+	Version: 2.21
 */
 
 	// include files
@@ -32,7 +32,7 @@
 	
 	
 	class FeedList {
-		
+			var $dateFormat = "F j, Y, g:i a";
 			var $id;
 			var $items;
 			var $rs;
@@ -108,7 +108,9 @@
 							if(!$this->args['mergeFeeds']){
 								$this->output.= '<div class="feedTitle">'.$feedTitle.'</div>';
 								if($this->args['show_date']){
-									$this->output .= '<div class="feedDate">updated: '.fl_tz_convert($this->rs->last_modified,0,Date('I')).'</div>';
+									$this->output .= '<div class="feedDate">updated: '.
+									$this->NormalizeDate($this->rs) . '</div>';	
+			//						fl_tz_convert($this->rs->last_modified,0,Date('I')).'</div>';
 								}
 
 								$this->output.=$this->Draw($this->items,$this->args);
@@ -217,7 +219,8 @@
 							'max_char_wordbreak' => true,
 							'file'=>$settings['file'],
 							'feedsToShow'=>0,
-							'mergeFeeds'=>false
+							'mergeFeeds'=>false,
+							'show_date_per_item' => false,
 						);
 			
 			}
@@ -252,7 +255,7 @@
 			function Draw(){
 
 				$settings = $this->GetSettings();
-				$this->items = $this->NormalizeDate($this->items);
+				$this->items = $this->NormalizeDates($this->items);
 
 
 
@@ -277,6 +280,7 @@
 					$linkTitle = '';
 					$thisDescription = '';
 					$thisTitle = $item['title'];
+					$thisItemDate = '';
 
 					if ($this->args['encoding']){ // very poor and limited internationalization effort
 						$thisTitle = htmlentities(utf8_decode($thisTitle));
@@ -336,6 +340,11 @@
 						$thisLink = '<span class="rssLinkListItemTitle">' . $thisTitle . '</span>';
 					}
 
+
+					if($this->args['show_date_per_item']){
+						$thisItemDate =  '<div class="feedItemDate">' . $item['feeddate'] . '<div>';
+					}
+
 					// Determine if any extra data should be shown:
 					$extraData = '';
 					if (strlen($this->args['additional_fields'])){
@@ -371,17 +380,15 @@
 					}
 
 					if ($this->args['show_description']){
-						$this->output .= $this->args['before'].$thisLink.$thisDescription.$extraData;
+						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$thisDescription.$extraData;
 					}else{
-						$this->output .= $this->args['before'].$thisLink.$extraData;
+						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$extraData;
 					}
 					if (is_numeric($this->args['max_characters']) && $this->args['max_characters'] > 0) {
 						$this->output .= '<div class="ReadMoreLink"><a href="'.htmlentities(utf8_decode($item['link'])).'">'.$settings["translations"][$settings["language"]]['ReadMore'].'</a> &nbsp; </div>';
 					}
 
 					$this->output .= $this->args['after'];
-
-
 
 				}
 
@@ -405,41 +412,35 @@
 			}
 		/* utility functions */
 
-			function NormalizeDate(){
+			function NormalizeDates(){
 				$newItems = array();
 
 				foreach($this->items as $item){
-					if(array_key_exists('pubdate',$item)) {
-						$d = $item['pubdate'];
-						$d = explode(' ',$d);
-
-						$d = $d[3]   . $this->GetMonthNum($d[2]) .   $d[1] . $d[4] . '0000';
-						$d = $this->MakeNumericOnly($d);
-						$this->ArrayPush($item,array("feeddate"=>$d));
-						
-
-
-					} else if (array_key_exists('published',$item)) {
-						$d = $item['published'];
-						$d = $this->MakeNumericOnly($d);
-						$this->ArrayPush($item,array("feeddate"=>$d));
-
-					} else if (array_key_exists('dc',$item) && array_key_exists('date',$item['dc'])) {
-						$d = $item['dc'];
-						$d = $d['date'];
-						$d = $this->MakeNumericOnly($d);
-						$this->ArrayPush($item,array("feeddate"=>$d));
-
-					} else {
-						$d = date("YmdHmsO");
-						$d = $this->MakeNumericOnly($d);
-						$this->ArrayPush($item,array("feeddate"=>$d));
-
-					}
+					$this->ArrayPush($item,array("feeddate"=>$this->NormalizeDate($item)));
 					array_push($newItems,$item);
 				}
 				return $newItems;
+			} 
+
+			function NormalizeDate($item){
+				$d="";
+				if(array_key_exists('pubdate',$item)) {
+						$d = date($this->dateFormat,strtotime($item['pubdate']));
+				} else if (array_key_exists('published',$item)) {
+						$d = date($this->dateFormat,strtotime($item['published']));
+				} else if (array_key_exists('dc',$item) && array_key_exists('date',$item['dc'])) {
+						$d = date($this->dateFormat,strtotime($item['dc']['date']));
+				} else if (array_key_exists('last_modified',$item)) {
+						$d = $this->TimezoneConvert($item['last_modified'],0,Date('I'));
+				} else {
+						$d = date($this->dateFormat);
+				}
+				return $d;
 			}
+
+			function TimezoneConvert($datetime,$tz_from,$tz_to,$format='d M Y h:ia T'){
+			   return date($format,strtotime($datetime)+(3600*($tz_to - $tz_from)));
+			} 
 
 			function MakeNumericOnly($val){
 				return ereg_replace( '[^0-9]+', '', $val);
