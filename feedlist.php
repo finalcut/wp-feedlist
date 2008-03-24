@@ -5,13 +5,11 @@
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.21
+	Version: 2.22
 */
 
 	// include files
 		$relroot = dirname(__FILE__).'/../../';
-
-
 
 		// get the magpie libary
 			if (file_exists($relroot . 'wp-includes/rss.php')) {
@@ -51,7 +49,7 @@
 			}
 
 		/* core methods */
-			// called automagically if you use a inline filter (inside a post/page).
+			// called automagically if you use an inline filter (inside a post/page).
 			function FeedListFilter(){
 
 				return $this->BuildFeedOutput();
@@ -62,8 +60,6 @@
 			function FeedListFeed(){
 				echo $this->BuildFeedOutput();
 			}
-
-
 
 			// call this if you want to process a feed file
 			function FeedListFile(){
@@ -221,12 +217,14 @@
 							'feedsToShow'=>0,
 							'mergeFeeds'=>false,
 							'show_date_per_item' => false,
+							'show_description_only' => false
 						);
 			
 			}
 		/* end basic settings */
 			function BuildFeedOutput(){
 				$this->args = $this->GetArgumentArray();
+
 
 				$this->rs = $this->GetFeed($this->args['rss_feed_url']);
 
@@ -256,10 +254,6 @@
 
 				$settings = $this->GetSettings();
 				$this->items = $this->NormalizeDates($this->items);
-
-
-
-
 				$this->items = $this->SortItems($this->items,$this->args['sort']);
 
 				// Explicitly set this because $new_window could be "simple":
@@ -281,6 +275,10 @@
 					$thisDescription = '';
 					$thisTitle = $item['title'];
 					$thisItemDate = '';
+
+					if($this->args['show_description_only']){
+						$this->args['show_description'] = true;
+					}
 
 					if ($this->args['encoding']){ // very poor and limited internationalization effort
 						$thisTitle = htmlentities(utf8_decode($thisTitle));
@@ -319,14 +317,15 @@
 						$linkTitle = str_replace(array("\n", "\t", '"'), array('', '', "'"), $linkTitle);
 						$linkTitle = substr($linkTitle, 0, 300);
 	
-						if (strlen(trim($thisDescription)))
+						// if we are only showing the description we don't need the separator..
+						if (strlen(trim($thisDescription)) && !$this->args['show_description_only'])
 						{
 							$thisDescription = $this->args['description_separator'].$thisDescription;
 						}
 					}
 
 					// Only build the hyperlink if a link is provided..and we are not told to suppress the link:
-					if (!$this->args['suppress_link'] && strlen(trim($item['link'])) && strlen(trim($thisTitle))){
+					if (!$this->args['suppress_link'] && strlen(trim($item['link'])) && strlen(trim($thisTitle)) && !$this->args['show_description_only']){
 						$thisLink = '<span class="rssLinkListItemTitle"><a href="'.htmlentities(utf8_decode($item['link'])).'"' . $target .' title="'.$linkTitle.'">'.$thisTitle.'</a></span>';
 					}
 					elseif (strlen(trim($item['link'])) && $this->args['show_description'])
@@ -339,7 +338,6 @@
 					{
 						$thisLink = '<span class="rssLinkListItemTitle">' . $thisTitle . '</span>';
 					}
-
 
 					if($this->args['show_date_per_item']){
 						$thisItemDate =  '<div class="feedItemDate">' . $item['feeddate'] . '<div>';
@@ -379,7 +377,10 @@
 						}
 					}
 
-					if ($this->args['show_description']){
+					if($this->args['show_description_only']){
+						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$extraData;
+
+					} else if ($this->args['show_description']){
 						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$thisDescription.$extraData;
 					}else{
 						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$extraData;
@@ -389,9 +390,7 @@
 					}
 
 					$this->output .= $this->args['after'];
-
 				}
-
 
 				return $this->output;
 			}
@@ -624,12 +623,9 @@
 
 			}
 
-
-			
 			$feed = new FeedList($args);
 
 			return $feed->FeedListFilter();
-
 		}
 
 	/* end template functions */

@@ -4,7 +4,7 @@
 or atom feed on your blog.
   Author: Bill Rawlinson
   Author URI: http://blog.rawlinson.us
-  Version: 2.21
+  Version: 2.22
 
 
 
@@ -48,7 +48,7 @@ cache directory.
 
 	22 Jan 2008			Minor Bug fixes (handle show_date, show_date_per_item)
 
-
+	24 Mar 2008			Added new parameter "show_description_only" which forces the output to only show each items description (will be linked if a link exists in the feed).
 
  Pending Features
 ===========================================================================================
@@ -180,7 +180,9 @@ pass the parameters in order as follows:
 			true - we cut on the last space before max_characters. 
 			false - cuts right at the max_characters point
 
-			
+	* show_description_only - provides a mechanism for turning off the item titles
+			true - suppresses the title and the description separator; forces "show_description" to be true
+			false - won't change the behavior of the plugin at all.  (DEFAULT)
 				
 	FILTER USAGE
 
