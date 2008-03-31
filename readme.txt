@@ -1,18 +1,55 @@
-  Plugin Name: Feed List
-  Plugin URL: http://rawlinson.us/blog/?p=212
-  Description: Allows you to display lists of links from an rss 
-or atom feed on your blog.
-  Author: Bill Rawlinson
-  Author URI: http://blog.rawlinson.us
-  Version: 2.22
+=== FeedList ===
+Contributors: finalcut
+Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%40doxie%2eorg&item_name=Feedlist&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
+Tags: rss, atom, feeds, listings
+Requires at least: 1.5
+Tested up to: 2.5
+Stable tag: 2.22.1
+
+Allows you to display lists of links from an rss or atom feed on your blog.
+
+== Description ==
+	This plugin fetches RSS or ATOM feeds from the url you provide and displays them on your blog. It can be used to manage "hot links" sections or anything else you can grab via an RSS or ATOM feed.
+
+	The plugin also supports wordpress filters by letting you embed a feed into your post.
+
+
+	The initial idea for this plugin came from the del.icio.us plugin that can be found at http://chrismetcalf.net. -
+
+	Secondary inspiration for the ATOM integration comes from James Lewis at http://jameslewis.com - I had been thinking about doing it and he did it which pushed me to make the integration.
 
 
 
-/* CHANGE LOG 
+== Installation ==
+	INSTALLATION:
+
+	1.) Place the plugin (feedlist.php) in your wp-content/plugins/ directory.
+
+	2.) Edit feedlist.php and fill out the values in the CONFIGURATION section.
+
+	3.) Enable the feedList plugin in the "Plugins" section of your WordPress administration panel.
+
+	4.) OPTIONAL BUT HIGHLY RECOMMENDED - Replace the class-snoopy.php file in your wp-includes directory with the one provided in this distribution.  The standard class-snoopy.php is broken
+	when trying to load pages that are compressed by their server (gzip compression).  This file fixes that problem.
+
+
+	UPGRADING:
+
+	1.) jot down your configuration information in feedList.php 
+
+	2.) Overwrite your feedlist.php file
+
+	3.) Update your feedlist configuration information with that data you wrote down in step 1
+
+	4.) enjoy
+
+
+
+== Change Log ==
 	DATE					MODIFICATION						
 		AUTHOR
-===========================================================================================
-	12 October 2005			Initial Version						
+-------------------------------------------------------------------------------------------------------
+12 October 2005			Initial Version						
 		Bill Rawlinson - released version 2.0B
 							rewrite of rssLinkedList  NOTE a 
 major change - the caching is handled 
@@ -50,44 +87,9 @@ cache directory.
 
 	24 Mar 2008			Added new parameter "show_description_only" which forces the output to only show each items description (will be linked if a link exists in the feed).
 
- Pending Features
-===========================================================================================
-Administrative Control Panel
-	* Allow users to define feed sources in admin panel
-	* Allow categorization of feed sources
-	* Define properties for each feed source (all the current parameters that are passed in)
-	* Simplify overall usage of the plugin by providing a new method that takes in either a feed name or category name
-		- will then show feed based on the name and how it was configured in the admin panel
-
-*/
-
-
-
-  DESCRIPTION:
-	This plugin fetches RSS or ATOM feeds from the url you 
-provide and displays them on your blog. It can be used to 
-manage "hot links" sections or anything else you can grab via 
-an RSS or ATOM feed.
-
-	The plugin also supports wordpress filters by letting you 
-embed a feed into your post.
-
-	Finally, it also provides a "Feed" management interface 
-within your wordpress admin console so you can add feeds to 
-your sidebar (or elsewhere) without having to reedit your 
-template.
-
-
-  INSPIRATION:
-	The initial idea for this plugin came from the del.icio.us 
-plugin that can be found at http://chrismetcalf.net. -
-
-	Secondary inspiration for the ATOM integration comes from 
-James Lewis at http://jameslewis.com - I had been thinking 
-about doing it and he did it which pushed me to make the 
-integration.
+-------------------------------------------------------------------------------------------------------
   
-  LICENSE:
+== LICENSE ==
 	This program is free software; you can redistribute it and/or 
 modify it under the terms of the GNU General Public License 
 (GPL) as published by the Free Software Foundation; either 
@@ -95,41 +97,13 @@ version 2 of the License, or (at your option) any later
 version.
 
 
-  POTENTIAL ISSUES:
+== POTENTIAL ISSUES ==
 	May not handle internationalization very well.  Has seen very 
 limited testing with non UTF-8 encoding.
 
 
-  REQUIREMENTS:
-	* WordPress 1.5 or greater (http://www.wordpress.org)
 
-	INSTALLATION:
-
-	1.) Place the plugin (feedlist.php) in your 
-wp-content/plugins/ directory.
-
-	2.) Edit feedlist.php and fill out the values in the 
-CONFIGURATION section.
-
-	3.) Enable the feedList plugin in the "Plugins" section of 
-your WordPress administration panel.
-
-	4.) OPTIONAL BUT HIGHLY RECOMMENDED - Replace the class-snoopy.php file in your wp-includes directory with the one provided in this distribution.  The standard class-snoopy.php is broken
-	when trying to load pages that are compressed by their server (gzip compression).  This file fixes that problem.
-
-
-  UPGRADING:
-	1.) jot down your configuration information in feedList.php 
-
-	2.) Overwrite your feedlist.php file
-
-	3.) Update your feedlist configuration information with that 
-data you wrote down in step 1
-
-	4.) enjoy
-
-
-  USAGE:
+== USAGE ==
 	From anywhere in your WordPress template, call the function 
 "feedList(...)", which takes the following parameters (all 
 parameters have default values) you can pass in either a named array of parameters or
@@ -255,9 +229,9 @@ pass the parameters in order as follows:
 
 
 
-	===================
+	-------------------
 	RANDOM FEEDS
-	===================
+	-------------------
 	This is a feature that lets you prepopulate a text file in a easy to read format that feedList will use to display your feeds randomly.
 	It supports pretty much every option the normal feedList functionality supports but with the added ability of displaying items from multiple feeds
 	at one time.
