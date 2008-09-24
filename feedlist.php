@@ -20,7 +20,7 @@
 				function FeedListInitError(){
 				?>
 			
-				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is directly under your <strong>wp-content/plugins</strong> directory and not a subdirectory.</div>
+				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is in a feedList directory directly under your <strong>wp-content/plugins</strong> directory.</div>
 			<?
 				}
 			}
