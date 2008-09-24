@@ -1,15 +1,15 @@
 <?
 /*
-	Plugin Name: Feed List
+	Plugin Name: FeedList
 	Plugin URI: http://rawlinson.us/blog/articles/feedlist-plugin/
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.22
+	Version: 2.22.3
 */
 
 	// include files
-		$relroot = dirname(__FILE__).'/../../';
+		$relroot = dirname(__FILE__).'/../../../';
 
 		// get the magpie libary
 			if (file_exists($relroot . 'wp-includes/rss.php')) {
@@ -20,7 +20,7 @@
 				function FeedListInitError(){
 				?>
 			
-				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is in a feedList directory directly under your <strong>wp-content/plugins</strong> directory.</div>
+				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is in the feedList directory under your <strong>wp-content/plugins</strong> directory.</div>
 			<?
 				}
 			}
