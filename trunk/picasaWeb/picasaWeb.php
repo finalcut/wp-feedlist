@@ -6,7 +6,7 @@
 	Description: Display thumbnails from one of your picasaweb feeds.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 1.7
+	Version: 1.70
 */
 
 
