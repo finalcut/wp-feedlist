@@ -4,7 +4,7 @@ Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%
 Tags: rss, atom, feeds, listings
 Requires at least: 1.5
 Tested up to: 2.5
-Stable tag: 2.22.1
+Stable tag: 2.22.3
 
 Allows you to display lists of links from an rss or atom feed on your blog.
 
@@ -23,7 +23,7 @@ Allows you to display lists of links from an rss or atom feed on your blog.
 == Installation ==
 	INSTALLATION:
 
-	1.) Place the plugin (feedlist.php) in your wp-content/plugins/ directory.
+	1.) Place the plugin (feedlist.php) in your wp-content/plugins/feedlist directory. (create the feedlist directory if necessary)
 
 	2.) Edit feedlist.php and fill out the values in the CONFIGURATION section.
 
@@ -284,3 +284,8 @@ pass the parameters in order as follows:
 		<?php randomFeedList("file=./wp-content/feeds2.txt&feedsToShow=2&itemsPerFeed=3&show_description=true&randomItemsPerFeed=false&beforeItems=&afterItems=&description_separator=::&encoding=false&sort=asc&new_window=true&ignore_cache=200&suppress_link=false&show_date=true&additional_fields=x~y~z.a.b") ?>
 
 
+== Troubleshooting ==
+
+	1. if your feed isn't being loaded properly then try to replace the following two files in your wp-includes directory of your wordpress install:
+		class-snoopy.php and rss.php
+	 with the copies found at http://code.google.com/p/wp-feedlist/downloads/list
