@@ -6,7 +6,7 @@
 	Description: Display thumbnails from one of your picasaweb feeds.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 1.70
+	Version: 1.9
 */
 
 
@@ -223,6 +223,38 @@ function picasaWeb($args){
 	$pw = new WP_PicasaWeb();
 	$pw->display($args);
 }
+
+
+function picasaWebRegExFilter($text)
+{
+	return preg_replace_callback("/<!--picasaweb:(.*)-->/", "picasaWebFilter", $text);
+}
+
+function picasaWebFilter($args){
+	$args = explode(",",$args[1]);
+
+
+	$a = array();
+	foreach($args as $arg){
+		$arg = explode(":=",$arg);
+		$a[$arg[0]] = $arg[1];
+	}
+	$args = $a;
+	
+	
+	$images = picasaWeb($args);
+
+	return $images;
+
+}
+
+
+
+		if (function_exists('add_filter'))
+		{
+			add_filter('the_content', 'picasaWebRegExFilter');
+		}
+
 
 endif;
 
